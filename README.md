@@ -1,10 +1,10 @@
-# Deutsch Coach AI
+# English Coach AI
 
 ## Project Overview
 
-Deutsch Coach AI is an AI-powered web application for practising written and spoken German.
+English Coach AI is an AI-powered web application for practising written and spoken English.
 
-Users select their CEFR level from A1 to C2, communicate through text or voice, and receive a correction only when their latest message contains an error. The AI continues the conversation naturally in German.
+Users select their CEFR level from A1 to C2, communicate through text or voice, and receive a correction only when their latest message contains an error. The AI continues the conversation naturally in English.
 
 ## Tech Stack
 
@@ -22,7 +22,7 @@ Users select their CEFR level from A1 to C2, communicate through text or voice, 
 
 - CEFR level selection from A1 to C2
 - Text and voice input
-- German speech recognition
+- English speech recognition
 - AI-generated conversational responses
 - Contextual correction of grammar, spelling and phrasing
 - Corrections linked to the relevant user message

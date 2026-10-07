@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deutsch Coach AI</title>
+  <title>English Coach AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -12,38 +12,38 @@
 <body>
   <main class="app-shell">
     <section id="onboarding" class="card onboarding">
-      <div class="eyebrow">Deutsch sprechen. Sofort korrigiert.</div>
-      <h1>Deutsch Coach AI</h1>
-      <p>Wähle dein Niveau. Der Coach spricht und korrigiert auf Deutsch.</p>
+      <div class="eyebrow">Speak English. Get corrected instantly.</div>
+      <h1>English Coach AI</h1>
+      <p>Choose your level. The coach speaks and corrects you in English.</p>
       <div class="level-grid" id="levelGrid"></div>
       <div class="onboarding-actions">
-        <button id="startBtn" class="primary" disabled>Gespräch starten</button>
-        <a class="secondary-button author-link" href="https://www.linkedin.com/in/anastasiia-mozyra/" target="_blank" rel="noopener noreferrer">Projektentwicklerin kontaktieren</a>
+        <button id="startBtn" class="primary" disabled>Start conversation</button>
+        <a class="secondary-button author-link" href="https://www.linkedin.com/in/anastasiia-mozyra/" target="_blank" rel="noopener noreferrer">Contact the developer</a>
       </div>
     </section>
 
     <section id="chatScreen" class="chat-screen hidden">
       <header class="topbar">
         <div>
-          <strong>Deutsch Coach AI</strong>
+          <strong>English Coach AI</strong>
           <span id="levelBadge" class="badge"></span>
         </div>
-        <button id="changeLevelBtn" class="ghost">Niveau ändern</button>
+        <button id="changeLevelBtn" class="ghost">Change level</button>
       </header>
 
       <div id="messages" class="messages" aria-live="polite"></div>
 
       <form id="chatForm" class="composer">
-        <button type="button" id="micBtn" class="icon-btn" aria-label="Spracheingabe">🎙</button>
-        <textarea id="messageInput" rows="1" placeholder="Schreibe oder sprich auf Deutsch …" required></textarea>
-        <button type="submit" id="sendBtn" class="primary compact">Senden</button>
+        <button type="button" id="micBtn" class="icon-btn" aria-label="Voice input">🎙</button>
+        <textarea id="messageInput" rows="1" placeholder="Write or speak in English …" required></textarea>
+        <button type="submit" id="sendBtn" class="primary compact">Send</button>
       </form>
       <div class="controls">
-        <label><input type="checkbox" id="autoSpeak" checked /> Antwort vorlesen</label>
+        <label><input type="checkbox" id="autoSpeak" checked /> Read response aloud</label>
         <span id="status"></span>
       </div>
       <footer class="chat-footer">
-        <a class="author-link" href="https://www.linkedin.com/in/anastasiia-mozyra/" target="_blank" rel="noopener noreferrer">Projektentwicklerin kontaktieren</a>
+        <a class="author-link" href="https://www.linkedin.com/in/anastasiia-mozyra/" target="_blank" rel="noopener noreferrer">Contact the developer</a>
       </footer>
     </section>
   </main>

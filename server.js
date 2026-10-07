@@ -15,34 +15,47 @@ if (existsSync(envPath)) {
 const port = Number(process.env.PORT || 3000);
 
 const LEVEL_RULES = {
-  A1: 'Benutze sehr kurze Sätze, häufige Wörter und sehr einfache Erklärungen mit einem klaren Beispiel.',
-  A2: 'Benutze kurze Alltagssätze und einfache, konkrete Grammatikerklärungen.',
-  B1: 'Benutze natürliches Alltagsdeutsch und klare Erklärungen auf mittlerem Niveau.',
-  B2: 'Benutze abwechslungsreiches, natürliches Deutsch und erkläre auch Register und typische Verbindungen.',
-  C1: 'Benutze anspruchsvolles, natürliches Deutsch und erkläre Stil, Nuancen und idiomatische Verwendung.',
-  C2: 'Benutze sehr präzises, idiomatisches Deutsch und erkläre feine stilistische Unterschiede.'
+  A1: 'Use very short sentences, high-frequency vocabulary and very simple explanations with one clear example.',
+  A2: 'Use short everyday sentences and simple, concrete grammar explanations.',
+  B1: 'Use natural everyday English and clear intermediate-level explanations.',
+  B2: 'Use varied, natural English and explain register, collocations and common phrasing when relevant.',
+  C1: 'Use sophisticated, natural English and explain style, nuance and idiomatic usage.',
+  C2: 'Use highly precise, idiomatic English and explain subtle stylistic and semantic differences.'
 };
 
 function buildInstructions(level) {
-  return `Du bist ein geduldiger, aufmerksamer und leicht humorvoller Deutsch-Coach. Der Lernende hat das Niveau ${level}. ${LEVEL_RULES[level] || LEVEL_RULES.B1}
+  return `You are a patient, attentive and slightly humorous English conversation coach. The learner's CEFR level is ${level}. ${LEVEL_RULES[level] || LEVEL_RULES.B1}
 
-Deine wichtigste Aufgabe ist ein echtes Gespräch. Die Korrektur unterstützt das Gespräch, ersetzt es aber nicht.
+Your primary goal is to maintain a real, natural conversation. Correction supports the conversation; it must not replace it.
 
-Verbindliche Regeln:
-1. Antworte ausschließlich auf Deutsch.
-2. Das Feld "reply" muss die kommunikative Absicht der neuesten Nachricht beantworten und den Dialog natürlich weiterführen. Wiederhole nicht einfach die Frage des Lernenden und stelle nicht dieselbe Frage zurück.
-3. Beispiel: Auf "Hoi, wie gents dich?" antworte etwa "Mir geht es sehr gut, danke! Wie war dein Tag bisher?" — nicht "Hallo, wie geht es dir?".
-4. Sei freundlich und gelegentlich leicht witzig, aber mache nicht in jeder Antwort einen Witz und übertreibe Lob nicht.
-5. Prüfe ausschließlich die NEUESTE Nachricht. Frühere Nachrichten sind nur Gesprächskontext. Wiederhole niemals eine frühere Korrektur.
-6. Korrigiere nur echte Fehler: Grammatik, Wortwahl, Satzstellung, Rechtschreibung oder deutlich unnatürliche Formulierungen. Erfinde keine Fehler und ersetze keine korrekte Form nur durch eine andere mögliche Variante.
-7. Wenn Fehler vorhanden sind, gib in "correction" genau eine vollständige korrigierte Version der neuesten Nachricht zurück.
-8. Wenn die neueste Nachricht korrekt und natürlich ist, setze "correction" auf einen leeren String. Dann wird keine Korrekturkarte angezeigt.
-9. Passe Wortschatz und Satzlänge an Niveau ${level} an.
-10. Antworte als valides JSON ohne Markdown mit genau diesem Schema:
+Mandatory rules:
+
+1. Reply exclusively in English.
+
+2. The "reply" field must respond to the communicative intent of the learner's latest message and naturally continue the conversation. Do not simply repeat the learner's question and do not ask the same question back.
+
+3. Respond as a natural English-speaking conversation partner rather than as a grammar textbook.
+
+4. Be friendly and occasionally lightly humorous, but do not make a joke in every response and do not overpraise the learner.
+
+5. Check ONLY the LATEST user message for errors. Earlier messages are conversation context only. Never repeat an earlier correction.
+
+6. Correct only genuine errors in grammar, vocabulary, word order, spelling, punctuation, or clearly unnatural phrasing. Do not invent errors and do not replace a correct natural expression merely because another version is possible.
+
+7. If the latest message contains an error, return exactly one complete corrected version of that message in "correction".
+
+8. If the latest message is correct and natural English, set "correction" to an empty string.
+
+9. Adapt vocabulary, grammar complexity and sentence length to CEFR level ${level}.
+
+10. Use natural contemporary English appropriate to the learner's level.
+
+11. Return valid JSON without Markdown using exactly this schema:
+
 {
-  "reply": "natürliche Antwort, die den Dialog weiterführt",
-  "correction": "vollständig korrigierte neueste Nachricht oder leerer String",
-  "encouragement": "kurzer, natürlicher Statussatz oder leerer String"
+  "reply": "natural response that continues the conversation",
+  "correction": "fully corrected latest message or empty string",
+  "encouragement": "short natural status sentence or empty string"
 }`;
 }
 
@@ -63,7 +76,7 @@ function parseJson(text) {
   } catch {}
 
   const match = text.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('Die KI-Antwort war nicht im erwarteten Format.');
+  if (!match) throw new Error('The AI response does not contain valid JSON.');
   return JSON.parse(match[0]);
 }
 
@@ -92,9 +105,9 @@ function normalizeCoachData(data, originalMessage) {
 
 function mockCoach(message, level) {
   return {
-    reply: `Danke! Erzähl mir bitte noch etwas mehr. Wir üben auf dem Niveau ${level}.`,
+    reply: `Thanks! Tell me a little more. We're practising at ${level} level.`,
     correction: '',
-    encouragement: 'Demo-Modus: Füge einen OPENAI_API_KEY hinzu, damit echte Korrekturen erzeugt werden.'
+    encouragement: 'Demo mode: Add an OPENAI_API_KEY to enable real corrections.'
   };
 }
 
@@ -122,10 +135,10 @@ async function handleChat(req, res) {
   try {
     const { message, level = 'B1', history = [] } = await readJson(req);
     if (!message || typeof message !== 'string') {
-      return json(res, 400, { error: 'Eine Nachricht ist erforderlich.' });
+      return json(res, 400, { error: 'A message is required.' });
     }
     if (!Object.hasOwn(LEVEL_RULES, level)) {
-      return json(res, 400, { error: 'Ungültiges Sprachniveau.' });
+      return json(res, 400, { error: 'Invalid language level.' });
     }
 
     if (!process.env.OPENAI_API_KEY) {
@@ -140,7 +153,7 @@ async function handleChat(req, res) {
       })),
       {
         role: 'user',
-        content: `NEUESTE NACHRICHT — nur diese Nachricht prüfen und korrigieren:\n${message}`
+        content: `LATEST MESSAGE — check and correct only this message:\n${message}`
       }
     ];
 
@@ -165,12 +178,12 @@ async function handleChat(req, res) {
 
     const payload = await response.json();
     const data = normalizeCoachData(parseJson(extractText(payload)), message);
-    if (!data.reply) throw new Error('Die KI-Antwort enthält keine Gesprächsantwort.');
+    if (!data.reply) throw new Error('The AI response does not contain a conversation reply.');
 
     return json(res, 200, data);
   } catch (error) {
     console.error(error);
-    return json(res, 500, { error: 'Die Antwort konnte nicht erstellt werden.' });
+    return json(res, 500, { error: 'The response could not be generated.' });
   }
 }
 
@@ -198,4 +211,4 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(port, () => console.log(`Deutsch Coach läuft auf http://localhost:${port}`));
+server.listen(port, () => console.log(`English Coach is running on http://localhost:${port}`));

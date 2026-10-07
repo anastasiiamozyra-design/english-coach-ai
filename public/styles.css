@@ -119,7 +119,17 @@ p { line-height: 1.58; }
 .turn-feedback summary::-webkit-details-marker { display: none; }
 .feedback-icon { width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: .75rem; background: var(--gold-soft); color: #8a651e; }
 .summary-action { color: #8a8b90; font-size: .76rem; }
-.turn-feedback[open] .summary-action::after { content: " ausblenden"; }
+.hide-label {
+  display: none;
+}
+
+.turn-feedback[open] .show-label {
+  display: none;
+}
+
+.turn-feedback[open] .hide-label {
+  display: inline;
+}
 .turn-feedback-body { border-top: 1px solid rgba(216, 184, 117, .25); padding: 2px 17px 16px; }
 .feedback-section { padding-top: 14px; }
 .feedback-section + .feedback-section { border-top: 1px solid rgba(37, 38, 42, .07); margin-top: 14px; }

@@ -1,102 +1,167 @@
-# Technische Spezifikation: Deutsch Coach AI
+# Technical Specification — English Coach AI
 
-## 1. Produktziel
+## 1. Product Goal
 
-Eine Webanwendung, in der Lernende schriftlich und mündlich auf Deutsch kommunizieren. Das System setzt das gewählte Sprachniveau A1–C2 voraus, führt ein natürliches Gespräch weiter, korrigiert Fehler und erklärt jede relevante Korrektur ausschließlich auf Deutsch.
+A web application in which learners practise written and spoken English.
 
-## 2. Zielgruppe
+The user selects a CEFR language level from A1 to C2, starts a natural conversation with an AI coach, receives corrections when the latest message contains a genuine error, and can use both text and voice interaction.
 
-Deutschlernende der Niveaus A1 bis C2, die aktive Sprachpraxis und unmittelbares Feedback benötigen.
+The main goal is natural English conversation practice. Corrections support the conversation but do not replace it.
 
-## 3. Kernablauf
+## 2. Target Audience
 
-1. Nutzer öffnet die Anwendung.
-2. Nutzer wählt A1, A2, B1, B2, C1 oder C2.
-3. System startet einen niveauangepassten Dialog.
-4. Nutzer schreibt oder diktiert eine Nachricht.
-5. System zeigt eine natürliche Antwort.
-6. System zeigt getrennt: Korrektur, neue Wörter.
-7. Auf Wunsch wird die Antwort vorgelesen.
-8. Der Dialogkontext wird für weitere Nachrichten beibehalten.
+English learners at CEFR levels A1–C2 who want active speaking and writing practice with immediate contextual feedback.
 
-## 4. Funktionale Anforderungen
+## 3. User Flow
 
-### Muss
+1. The user opens the application.
+2. The user selects A1, A2, B1, B2, C1 or C2.
+3. The system starts a conversation adapted to the selected level.
+4. The user writes or dictates a message in English.
+5. The AI responds naturally and continues the conversation.
+6. If the latest user message contains a genuine error, the system displays a correction.
+7. If the latest user message is already correct and natural, no correction card is shown.
+8. The user can optionally have the AI response read aloud.
+9. Conversation context is retained for subsequent messages.
+10. Changing the CEFR level starts a new conversation session.
 
-- Niveauwahl beim Start
-- Textbasierter Chat
-- Spracheingabe auf Deutsch
-- Deutsche Sprachausgabe
-- Ausschließlich deutsche KI-Antwortenen
-- Fehlerkorrektur für Grammatik, Lexik, Satzstellung und Natürlichkeit
-- Kennzeichnung korrekter Sätze ohne erfundene Fehler
-- Responsive Oberfläche
-- Serverseitige Speicherung des API-Schlüssels
-- Fehlerzustände und Demo-Modus
+## 4. Functional Requirements
 
-### Soll
+### Must
 
-- Gesprächsverlauf lokal oder in einer Datenbank speichern
-- Themenwahl, zum Beispiel Alltag, Beruf, Reisen oder Prüfung
-- Statistiken nach Fehlertyp
-- Persönliche Wortliste
-- Wiederholungsübungen aus früheren Fehlern
-- Export des Lernfortschritts
+- CEFR level selection from A1 to C2
+- Text-based chat
+- English voice input
+- English speech output
+- AI responses exclusively in English
+- Natural conversation adapted to the selected CEFR level
+- Correction of genuine errors in grammar, vocabulary, word order, spelling, punctuation and clearly unnatural phrasing
+- No invented corrections for already correct and natural English
+- Correction applies only to the latest user message
+- Previous messages are used only as conversation context
+- Responsive interface
+- Server-side storage of the OpenAI API key
+- Demo mode when no API key is available
 
-## 5. Niveauanpassung
+### Should
 
-- A1: sehr kurze Sätze, Hochfrequenzwortschatz, einfache Beispiele
-- A2: kurze Alltagssätze, grundlegende Grammatikbegriffe
-- B1: natürliche Alltagssprache, verständliche Zwischenerklärungen
-- B2: differenzierter Wortschatz, Register und Kollokationen
-- C1: komplexe Strukturen, Idiomatik und Stil
-- C2: präzise Nuancen, idiomatische und stilistische Feinheiten
+- Persistent conversation history
+- Topic selection, for example everyday life, work, travel or exam preparation
+- Error statistics grouped by error type
+- Personal vocabulary list
+- Review exercises based on previous mistakes
+- Learning-progress export
 
-## 6. Antwortstruktur
+## 5. CEFR Level Adaptation
 
-Die KI liefert ein strukturiertes Objekt mit:
+- A1: very short sentences, high-frequency vocabulary and very simple explanations
+- A2: short everyday sentences and simple grammar explanations
+- B1: natural everyday English and clear intermediate-level explanations
+- B2: varied natural English with attention to register, collocations and common phrasing
+- C1: sophisticated natural English with style, nuance and idiomatic usage
+- C2: highly precise and idiomatic English with subtle stylistic and semantic distinctions
 
-- `reply`: natürliche Fortsetzung des Gesprächs
-- `correction`: korrigierte Version oder leer
-- ``: Erklärung auf Deutsch
-- `newWords`: neue Wörter mit deutscher Bedeutungserklärung
-- `encouragement`: kurzer sachlicher Lernimpuls
+## 6. AI Response Structure
 
-## 7. Architektur des MVP
+The AI returns a structured JSON object containing:
 
-- Frontend: HTML, CSS, Vanilla JavaScript
-- Backend: Node.js und Express
-- KI: OpenAI Responses API
-- Spracheingabe: Browser Web Speech API
-- Sprachausgabe: Browser Speech Synthesis API
-- Konfiguration: Umgebungsvariablen
+- `reply`: the natural conversational response
+- `correction`: the fully corrected version of the latest user message, or an empty string
+- `encouragement`: a short natural learning or status message, or an empty string
 
-## 8. Datenschutz und Sicherheit
+If the latest user message is correct and natural English, `correction` must be an empty string and no correction card is displayed.
 
-- API-Schlüssel ausschließlich serverseitig
-- Keine sensiblen Daten in Logs
-- Für Produktion: Rate Limiting, Authentifizierung, HTTPS, Einwilligungs- und Löschfunktionen
-- Klare Information, dass Spracheingabe je nach Browser über Browser- oder Betriebssystemdienste verarbeitet werden kann
+## 7. MVP Architecture
 
-## 9. Akzeptanzkriterien
+- Frontend: HTML, CSS and Vanilla JavaScript
+- Backend: Node.js with the built-in HTTP server
+- AI: OpenAI Responses API
+- Voice input: Browser Web Speech API
+- Voice output: Browser Speech Synthesis API
+- Configuration: Environment variables
+- Deployment: Vercel
 
-- Nutzer kann vor dem ersten Chat ein Niveau auswählen.
-- Textnachrichten erzeugen eine deutsche Antwort und deutsches Feedback.
-- Mikrofon kann in einem unterstützten Browser deutschen Text erfassen.
-- KI-Antwort kann vorgelesen werden.
-- Niveauwechsel setzt eine neue Sitzung auf.
-- Ohne API-Schlüssel bleibt die Oberfläche im Demo-Modus bedienbar.
-- API-Schlüssel erscheint nicht im Frontend-Code oder Netzwerk-Request des Browsers.
+## 8. Voice Behaviour
 
-## 10. Nächste Produktionsschritte
+### Speech Recognition
 
-1. Datenbank und Nutzerkonten ergänzen.
-2. Browser-Spracherkennung durch serverseitige Transkription ersetzen, um Qualität und Browserabdeckung zu erhöhen.
-3. Serverseitige TTS-Ausgabe ergänzen, um eine konsistentere deutsche Stimme zu liefern.
-4. Automatisierte Tests für Niveauwahl, Antwortschema und Fehlerfälle hinzufügen.
-5. Monitoring, Kostenlimits und Missbrauchsschutz einführen.
+The browser recognises user speech as English using:
 
+`en-US`
 
-## Behaviour update 2.3
+### Speech Synthesis
 
-For a correct and natural latest user message, correction and  are empty and no correction card is rendered. For an incorrect latest message, the card contains exactly Korrektur and Erklärung. The reply must answer the communicative intent and continue the conversation naturally.
+The browser reads AI responses aloud using:
+
+`en-US`
+
+Speech can be slightly slower for beginner levels such as A1 and A2.
+
+## 9. Data and Security
+
+- The OpenAI API key is stored only on the server side
+- The API key must never appear in frontend code
+- Sensitive data should not be written to application logs
+- Production deployment should use HTTPS
+- Production systems should include appropriate rate limiting and abuse protection
+- Browser voice functionality may depend on browser and operating-system support
+
+## 10. Acceptance Criteria
+
+- The user can select a CEFR level before starting the first conversation
+- Text messages generate an English conversational response
+- Correct and natural English messages do not generate unnecessary correction cards
+- Incorrect messages can generate a corrected version
+- The AI responds to the communicative intent of the user's message rather than merely correcting it
+- The AI continues the conversation naturally
+- The microphone can capture English speech in a supported browser
+- AI responses can be read aloud in English
+- Changing the level starts a new session
+- The application remains usable in demo mode without an OpenAI API key
+- The OpenAI API key does not appear in frontend code or browser requests
+
+## 11. Correction Behaviour
+
+For each turn, only the latest user message is evaluated for correction.
+
+Earlier messages remain available to the AI as conversation context but must not be corrected again.
+
+A correction should be shown only when there is a genuine issue with:
+
+- grammar
+- vocabulary
+- word order
+- spelling
+- punctuation
+- clearly unnatural English phrasing
+
+A correct natural expression must not be replaced simply because another wording is also possible.
+
+When a correction is required, the `correction` field contains one complete corrected version of the user's latest message.
+
+When no correction is required:
+
+`correction` is an empty string.
+
+## 12. Conversation Behaviour
+
+The AI should behave primarily as a natural English-speaking conversation partner rather than as a grammar textbook.
+
+The response should:
+
+- answer the user's communicative intent
+- naturally continue the conversation
+- avoid simply repeating the user's question
+- avoid asking the same question back unnecessarily
+- adapt vocabulary and sentence complexity to the selected CEFR level
+- remain friendly without excessive praise
+- use occasional light humour when appropriate
+
+## 13. Next Production Steps
+
+1. Add persistent conversation storage and optional user accounts.
+2. Add automated tests for CEFR behaviour, response schema and correction logic.
+3. Improve browser coverage for speech recognition.
+4. Consider server-side speech-to-text if more consistent voice recognition is required.
+5. Consider server-side text-to-speech if more consistent English voice quality is required.
+6. Add monitoring, cost controls, rate limiting and abuse protection.

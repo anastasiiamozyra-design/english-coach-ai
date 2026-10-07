@@ -1,5 +1,5 @@
 const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-let selectedLevel = localStorage.getItem('deutsch-level') || '';
+let selectedLevel = localStorage.getItem('english-level') || '';
 let history = [];
 let recognition = null;
 let turnCounter = 0;
@@ -77,12 +77,12 @@ function renderTurnFeedback(host, data, originalMessage) {
   details.open = true;
 
   const summary = document.createElement('summary');
-  summary.innerHTML = '<span class="feedback-icon">✓</span><span>Korrektur</span><span class="summary-action">Anzeigen</span>';
+  summary.innerHTML = '<span class="feedback-icon">✓</span><span>Correction</span><span class="summary-action"><span class="show-label">Show</span><span class="hide-label">Hide</span></span>';
   details.appendChild(summary);
 
   const body = document.createElement('div');
   body.className = 'turn-feedback-body';
-  body.appendChild(createFeedbackSection('Korrektur', correction));
+  body.appendChild(createFeedbackSection('Correction', correction));
 
   details.appendChild(body);
   host.replaceChildren(details);
@@ -112,14 +112,14 @@ function scrollToLatest() {
 }
 
 function startChat() {
-  localStorage.setItem('deutsch-level', selectedLevel);
+  localStorage.setItem('english-level', selectedLevel);
   el('levelBadge').textContent = selectedLevel;
   onboarding.classList.add('hidden');
   chatScreen.classList.remove('hidden');
   messages.innerHTML = '';
   history = [];
   turnCounter = 0;
-  addAssistantMessage(`Hallo! Wir sprechen auf dem Niveau ${selectedLevel}. Worüber möchtest du heute sprechen?`);
+  addAssistantMessage(`Hi! We're speaking at ${selectedLevel} level. What would you like to talk about today?`);
   input.focus();
 }
 
@@ -127,7 +127,7 @@ function speak(text) {
   if (!el('autoSpeak').checked || !('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'de-DE';
+  utterance.lang = 'en-US';
   utterance.rate = selectedLevel === 'A1' || selectedLevel === 'A2' ? 0.88 : 1;
   speechSynthesis.speak(utterance);
 }
@@ -136,7 +136,7 @@ async function sendMessage(message) {
   const feedbackHost = addUserTurn(message);
   const previousHistory = [...history];
   history.push({ role: 'user', content: message });
-  el('status').textContent = 'Der Coach denkt …';
+  el('status').textContent = 'The coach is thinking …';
   el('sendBtn').disabled = true;
 
   try {
@@ -152,10 +152,10 @@ async function sendMessage(message) {
     addAssistantMessage(data.reply);
     history.push({ role: 'assistant', content: data.reply });
     speak(data.reply);
-    el('status').textContent = data.demo ? 'Demo-Modus ohne API-Schlüssel' : data.encouragement || '';
+    el('status').textContent = data.demo ? 'Demo mode without API key' : data.encouragement || '';
   } catch (error) {
     feedbackHost.remove();
-    addAssistantMessage('Entschuldigung, gerade ist ein technischer Fehler aufgetreten. Bitte versuche es noch einmal.');
+    addAssistantMessage('Sorry, a technical error occurred. Please try again.');
     el('status').textContent = error.message;
   } finally {
     el('sendBtn').disabled = false;
@@ -185,16 +185,16 @@ function setupSpeechRecognition() {
   }
 
   recognition = new Recognition();
-  recognition.lang = 'de-DE';
+  recognition.lang = 'en-US';
   recognition.interimResults = true;
   recognition.continuous = false;
   recognition.onstart = () => {
     el('micBtn').classList.add('listening');
-    el('status').textContent = 'Ich höre zu …';
+    el('status').textContent = 'Listening …';
   };
   recognition.onend = () => el('micBtn').classList.remove('listening');
   recognition.onerror = () => {
-    el('status').textContent = 'Die Spracheingabe konnte nicht erkannt werden.';
+    el('status').textContent = 'Voice input could not be recognized.';
   };
   recognition.onresult = (event) => {
     const transcript = Array.from(event.results).map((result) => result[0].transcript).join('');
